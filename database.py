@@ -5,10 +5,10 @@ class Database:
     #datos de conexion listos
     def __init__(self):
         self.connection = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="admin",
-            database="fulladmin")
+            host = "127.0.0.1",
+            user = "root",
+            password = "admin",
+            database = "fulladmin")
 
     #desconectarse de la db
     def disconnect(self):
@@ -25,7 +25,7 @@ class Database:
             contrasena = encrypt.hexdigest()
             cursor.execute("INSERT INTO usuarios (rut, correo, nombre, apPat, apMat, contrasena, root) VALUES (%s, %s, %s, %s, %s, %s, %s)", (rut, correo, nombre, apPat, apMat, contrasena, root))
             self.connection.commit()
-    
+    #login
     def login(self, rut, correo, contrasena):
         encrypt = hashlib.sha256(contrasena.encode())
         contrasena = encrypt.hexdigest()
@@ -43,7 +43,7 @@ class Database:
             print("Inicio de sesión exitoso")
             return True
     
-    
+    #listado de usuarios
     def listaUsuarios(self):
         c = self.connection.cursor()
         c.execute("SELECT * FROM usuarios")
