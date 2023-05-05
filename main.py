@@ -61,19 +61,20 @@ class Login(QMainWindow):
 
     # funcion que abre la ventana de registro    
     def fRegister(self):
-        self.close()
+        self.hide()
         self.ventana = Register()
         self.ventana.show()        
 
-
-    #funcion que ejecuta la logica para ingresar los datos de inicio de sesion
+# función que ejecuta la lógica para ingresar los datos de inicio de sesión
     def fLogin(self):
         rut = self.rutInput.text()
         correo = self.correoInput.text()
         contrasena = self.contrasenaInput.text()
-        print(rut,  correo, contrasena)
-        self.db.login(rut, correo, contrasena)
 
+        try:
+            self.db.login(rut, correo, contrasena)
+        except Exception as e:
+            QMessageBox.critical(self, "Error", str(e))
 
 class Register(QMainWindow):
     def __init__(self):
@@ -159,7 +160,7 @@ class Register(QMainWindow):
         self.show()
 
     def fLogin(self):
-        self.close()
+        self.hide()
         self.ventana = Login()
         self.ventana.show() 
 
@@ -181,10 +182,6 @@ class Register(QMainWindow):
         # También puedes mostrar el mensaje de bienvenida aquí.
         print(rut, correo, nombre, apPat, apMat, contrasena, contrasenaConfirm, root)
         self.db.registroDeUsuario(rut, correo, nombre, apPat, apMat, contrasena, contrasenaConfirm, root)
-
-
-
-
 
 
 if __name__ == "__main__":
