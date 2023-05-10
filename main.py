@@ -1,19 +1,27 @@
+import os
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QLabel, QVBoxLayout, QWidget,QMessageBox, QCheckBox
 from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import QFile, Qt
 from database import Database
-import hashlib
-import sys
+from os import path
+import sys 
 
 
+# Ventana de inicio de sesión
 class Login(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = Database()
 
         self.setWindowTitle("Inicio de Sesión")
-        self.setFixedSize(300, 200)
+        self.setFixedSize(1000, 500)
         self.setWindowIcon(QIcon("icon.png"))
 
+        self.setupUI()
+        self.loadStyles()
+        
+    # funcion de UI
+    def setupUI(self):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
@@ -21,42 +29,44 @@ class Login(QMainWindow):
         self.central_widget.setLayout(self.layout)
 
         self.rutLabel = QLabel("Rut de Usuario")
-        self.layout.addWidget(self.rutLabel)
-
         self.rutInput = QLineEdit()
-        self.layout.addWidget(self.rutInput)
-        
-        self.correoLabel = QLabel("Correo de Usuario")
-        self.layout.addWidget(self.correoLabel)
 
+        self.correoLabel = QLabel("Correo de Usuario")
         self.correoInput = QLineEdit()
-        self.layout.addWidget(self.correoInput)
 
         self.contrasenaLabel = QLabel("Contraseña")
-        self.layout.addWidget(self.contrasenaLabel)
-
         self.contrasenaInput = QLineEdit()
         self.contrasenaInput.setEchoMode(QLineEdit.Password)
-        self.layout.addWidget(self.contrasenaInput)
 
-        self.login_button = QPushButton("Iniciar Sesión")
-        self.login_button.setStyleSheet("background-color: #bd93f9;")
-        self.login_button.setFont(QFont("Arial", 12, QFont.Bold))
-        self.layout.addWidget(self.login_button)
-        
+        self.loginButton = QPushButton("Iniciar Sesión")
+        self.loginButton.setObjectName("loginButton")
 
         self.register_label = QLabel("¿No tienes una cuenta?")
+        self.registerButton = QPushButton("Registrarse")
+        self.registerButton.setObjectName("registerButton")
+
+        # Agregar los widgets al layout
+        self.layout.addWidget(self.rutLabel)
+        self.layout.addWidget(self.rutInput)
+        self.layout.addWidget(self.correoLabel)
+        self.layout.addWidget(self.correoInput)
+        self.layout.addWidget(self.contrasenaLabel)
+        self.layout.addWidget(self.contrasenaInput)
+        self.layout.addWidget(self.loginButton)
         self.layout.addWidget(self.register_label)
+        self.layout.addWidget(self.registerButton)
 
-        self.register_button = QPushButton("Registrarse")
-        self.register_button.setStyleSheet("background-color: #bd93f9;")
-        self.register_button.setFont(QFont("Arial", 10))
-        self.layout.addWidget(self.register_button)
+        # Conectar los botones a sus funciones
+        self.loginButton.clicked.connect(self.fLogin)
+        self.registerButton.clicked.connect(self.fRegister)
 
-        self.login_button.clicked.connect(self.fLogin)
-        self.register_button.clicked.connect(self.fRegister)
 
-        self.show()
+    # funcion que carga los estilos
+    def loadStyles(self):
+        styleFile = QFile(os.path.join(os.getcwd(), "FullAdmin\styles.css"))
+        styleFile.open(QFile.ReadOnly)
+        styleSheet = styleFile.readAll().data().decode()
+        self.setStyleSheet(styleSheet)
 
 
     # funcion que abre la ventana de registro    
@@ -65,17 +75,18 @@ class Login(QMainWindow):
         self.ventana = Register()
         self.ventana.show()        
 
-# función que ejecuta la lógica para ingresar los datos de inicio de sesión
+    # función que ejecuta la lógica para ingresar los datos de inicio de sesión
     def fLogin(self):
         rut = self.rutInput.text()
         correo = self.correoInput.text()
         contrasena = self.contrasenaInput.text()
-
         try:
             self.db.login(rut, correo, contrasena)
         except Exception as e:
             QMessageBox.critical(self, "Error", str(e))
 
+
+# Ventana de registro
 class Register(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -188,4 +199,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ventana = Login()
     ventana.show()
+    
     sys.exit(app.exec())

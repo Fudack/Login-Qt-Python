@@ -1,0 +1,24 @@
+QLabel {
+    font-size: 14px;
+    color: #ff0000;
+}
+
+QLineEdit {
+    height: 40px;
+    width: 100px;
+    padding: 4px;
+    border: 1px solid #999999;
+    border-radius: 2px;
+}
+
+QPushButton#loginButton {
+    background-color: #6a00ff;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+QPushButton#registerButton {
+    background-color: #f99393;
+    font-size: 10px;
+}
+
